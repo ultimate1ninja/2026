@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Happy New Year Fireworks</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+body {
+    background: radial-gradient(circle at center, #0a0a2a 0%, #000 100%);
+    color:white; font-family:Arial,sans-serif;
+    overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.container {position:relative; width:100%; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:10; overflow:hidden;}
+.title {position:absolute; top:20px; text-align:center; z-index:20; width:100%;}
+.title h1 {
+    font-size:2.5rem;
+    margin-bottom:10px;
+    background: linear-gradient(45deg, #FFD700, #FF8C00, #FF1493, #00BFFF);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 10px rgba(255,255,255,0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+.message-container {
+    position:relative; width:90%; max-width:1200px; height:300px; display:flex; justify-content:center; align-items:center; margin-top:50px; z-index:15;
+}
+.message {display:flex; justify-content:center; flex-wrap:wrap; gap:15px; perspective:1000px;}
+.letter-box {
+    width:70px; height:90px; position:relative; margin:5px; display:flex; align-items:center; justify-content:center;
+    font-size:3.5rem; font-weight:bold; color:transparent; opacity:0; transform:translateY(100px) scale(0.5);
+    transition:all 0.7s cubic-bezier(0.68,-0.55,0.27,1.55); z-index:5; border-radius:10px;
+}
+.letter {position:absolute; font-size:3.5rem; font-weight:900; z-index:10; text-shadow:0 0 10px currentColor; font-family:'Impact','Arial Black',sans-serif;}
+.letter-h {color:#FF0000;} .letter-a {color:#FF8C00;} .letter-p {color:#FFD700;} .letter-y {color:#32CD32;}
+.letter-n {color:#00BFFF;} .letter-e {color:#8A2BE2;} .letter-w {color:#FF1493;} .letter-r {color:#00CED1;}
+.letter-p,.letter-r {animation: missingLetterGlow 1.5s ease-in-out infinite alternate;}
+.controls {position:absolute; bottom:30px; display:flex; gap:20px; z-index:20;}
+button {
+    background: rgba(0,0,0,0.7); color:white; border:none; padding:15px 25px; border-radius:50px; font-size:1.1rem; cursor:pointer;
+    transition:all 0.3s ease; display:flex; align-items:center; gap:10px; box-shadow:0 5px 15px rgba(0,0,0,0.5); border:2px solid transparent;
+}
+button:hover {transform:translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.7);}
+#startBtn {background: linear-gradient(45deg,#FF8C00,#FF4500); border-color:#FFD700;}
+#resetBtn {background: linear-gradient(45deg,#00BFFF,#1E90FF); border-color:#00FFFF;}
+#debugBtn {background: linear-gradient(45deg,#32CD32,#228B22); border-color:#7CFC00;}
+.instructions {
+    position:absolute; bottom:100px; text-align:center; background:rgba(0,0,0,0.6); padding:15px; border-radius:10px; max-width:500px;
+    font-size:0.9rem; line-height:1.5; border:1px solid #00BFFF; z-index:20;
+}
+.instructions h3 {color:#FFD700; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:8px;}
+.firework, .particle {position:absolute; pointer-events:none; z-index:2;}
+.firework-trail {position:absolute; width:3px; height:20px; background:linear-gradient(to top, transparent, gold); transform-origin:bottom; pointer-events:none; z-index:1;}
+.countdown {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    font-size:8rem; font-weight:bold; color:#FFD700; text-shadow:0 0 30px #FFD700; opacity:0; z-index:25; pointer-events:none;
+}
+.letter-counter {position:absolute; top:30px; right:30px; background:rgba(0,0,0,0.7); padding:10px 20px; border-radius:10px; border:1px solid #00BFFF; z-index:20; font-size:1.2rem;}
+.letter-counter span {color:#FFD700; font-weight:bold;}
+@keyframes glow {from {text-shadow:0 0 10px #fff,0 0 20px #fff,0 0 30px #FFD700,0 0 40px #FFD700;} to {text-shadow:0 0 20px #fff,0 0 30px #FF8C00,0 0 40px #FF8C00,0 0 50px #FF8C00;}}
+@keyframes missingLetterGlow {0%,100% {text-shadow:0 0 15px currentColor,0 0 30px currentColor,0 0 45px currentColor; transform:scale(1);} 50% {text-shadow:0 0 25px currentColor,0 0 50px currentColor,0 0 75px currentColor; transform:scale(1.1);}}
+@keyframes countdownPulse {0%{transform:translate(-50%,-50%) scale(1); opacity:1;} 50%{transform:translate(-50%,-50%) scale(1.2); opacity:1;} 100%{transform:translate(-50%,-50%) scale(0.5); opacity:0;}}
+@keyframes letterPop {0%{transform:scale(0) rotate(-180deg); opacity:0;} 70%{transform:scale(1.2) rotate(10deg); opacity:1;} 100%{transform:scale(1) rotate(0deg); opacity:1;}}
+@keyframes float {0%,100%{transform:translateY(0);} 50%{transform:translateY(-20px);}}
+@media(max-width:768px){.letter-box{width:50px;height:70px;font-size:2.5rem;}.letter{font-size:2.5rem;}.message{gap:10px;}.controls{flex-direction:column; gap:10px;}.instructions{bottom:150px; max-width:90%;}.letter-counter{top:80px; right:10px; font-size:1rem;}}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="title">
+        <h1><i class="fas fa-fireworks"></i> Complete Happy New Year Fireworks</h1>
+        <p>All letters included!</p>
+    </div>
+    <div class="letter-counter">Letters displayed: <span id="letterCount">0</span>/14</div>
+    <div class="message-container"><div class="message" id="message"></div></div>
+    <div class="countdown" id="countdown">3</div>
+    <div class="instructions">
+        <h3><i class="fas fa-info-circle"></i> Complete Message: "HAPPY NEW YEAR"</h3>
+        <p>14 letters total: H A P P Y (space) N E W (space) Y E A R</p>
+    </div>
+    <div class="controls">
+        <button id="startBtn"><i class="fas fa-play"></i> Start Fireworks</button>
+        <button id="debugBtn"><i class="fas fa-search"></i> Show All Letters</button>
+        <button id="resetBtn"><i class="fas fa-redo"></i> Reset</button>
+    </div>
+</div>
+
+<script>
+const messageContainer = document.getElementById('message');
+const startBtn = document.getElementById('startBtn');
+const debugBtn = document.getElementById('debugBtn');
+const resetBtn = document.getElementById('resetBtn');
+const countdownEl = document.getElementById('countdown');
+const letterCountEl = document.getElementById('letterCount');
+
+const letterData = [
+    {char:'H', color:'#FF0000'},
+    {char:'A', color:'#FF8C00'},
+    {char:'P', color:'#FFD700'},
+    {char:'P', color:'#FFFF00'},
+    {char:'Y', color:'#32CD32'},
+    {char:' ', color:'transparent'},
+    {char:'N', color:'#00BFFF'},
+    {char:'E', color:'#8A2BE2'},
+    {char:'W', color:'#FF1493'},
+    {char:' ', color:'transparent'},
+    {char:'Y', color:'#32CD32'},
+    {char:'E', color:'#8A2BE2'},
+    {char:'A', color:'#FF8C00'},
+    {char:'R', color:'#00CED1'}
+];
+
+let letterElements = [];
+let isAnimating = false;
+
+function initLetters(){
+    messageContainer.innerHTML=''; letterElements=[];
+    letterData.forEach((letterObj,i)=>{
+        const box=document.createElement('div'); box.className='letter-box'; box.id='letter-'+i;
+        const letter=document.createElement('div');
+        if(letterObj.char===' '){letter.innerHTML='&nbsp;&nbsp;'; letter.style.color='transparent'; box.style.width='40px';}
+        else{letter.className='letter letter-'+letterObj.char.toLowerCase(); letter.textContent=letterObj.char; letter.style.color=letterObj.color;}
+        box.appendChild(letter); messageContainer.appendChild(box); letterElements.push({box,element:letter,data:letterObj});
+    });
+    updateLetterCount();
+}
+
+function updateLetterCount(){
+    const visible=letterElements.filter(item=>item.box.style.opacity==='1'||item.box.style.opacity==='').length;
+    letterCountEl.textContent=visible;
+}
+
+function createFirework(x,y,color,letterIndex=null){
+    const particleCount=70; const explosionRadius=90;
+    for(let i=0;i<particleCount;i++){
+        const particle=document.createElement('div');
+        particle.className='particle';
+        particle.style.borderRadius='50%'; particle.style.backgroundColor=color; particle.style.boxShadow=`0 0 10px ${color}`;
+        particle.style.left=`${x}px`; particle.style.top=`${y}px`;
+        const size=Math.random()*8+2; particle.style.width=`${size}px`; particle.style.height=`${size}px`;
+        const angle=Math.random()*Math.PI*2; const distance=Math.random()*explosionRadius; const duration=800+Math.random()*1200;
+        const targetX=x+Math.cos(angle)*distance; const targetY=y+Math.sin(angle)*distance;
+        const anim=particle.animate([{transform:`translate(0,0) scale(1)`,opacity:1},{transform:`translate(${targetX-x}px,${targetY-y}px) scale(0.1)`,opacity:0}],{duration:duration,easing:'cubic-bezier(0.1,0.8,0.2,1)'});
+        anim.onfinish=()=>particle.remove();
+    }
+    if(letterIndex!==null) setTimeout(()=>revealLetter(letterIndex),300);
+}
+
+function revealLetter(index){
+    const item=letterElements[index]; const box=item.box; const letter=item.element;
+    if(item.data.char===' '){box.style.opacity='1'; box.style.transform='translateY(0) scale(1)'; updateLetterCount(); return;}
+    box.style.animation='letterPop 0.6s ease-out forwards';
+    box.style.opacity='1'; box.style.transform='translateY(0) scale(1)';
+    updateLetterCount();
+}
+
+async function startFireworks(){
+    if(isAnimating) return; isAnimating=true; startBtn.disabled=true; debugBtn.disabled=true;
+    await showCountdown();
+    for(let i=0;i<letterElements.length;i++){
+        const item=letterElements[i]; 
+        const rect=item.box.getBoundingClientRect();
+        const x=rect.left+rect.width/2; const y=rect.top+rect.height/2;
+        setTimeout(()=>{if(item.data.char===' ') revealLetter(i); else createFirework(x,y,item.data.color,i);},i*400);
+    }
+    setTimeout(()=>{isAnimating=false; startBtn.disabled=false; debugBtn.disabled=false;},letterElements.length*400+3000);
+}
+
+function showAllLetters(){
+    letterElements.forEach(item=>{item.box.style.opacity='1'; item.box.style.transform='translateY(0) scale(1)'; item.box.style.animation='letterPop 0.5s ease-out forwards';});
+    updateLetterCount();
+}
+
+function resetAnimation(){
+    letterElements.forEach(item=>{item.box.style.opacity='0'; item.box.style.transform='translateY(100px) scale(0.5)'; item.box.style.animation='none'; item.element.style.animation='none';});
+    document.querySelectorAll('.particle,.firework-trail').forEach(p=>p.remove());
+    countdownEl.style.opacity='0'; isAnimating=false; startBtn.disabled=false; debugBtn.disabled=false;
+    updateLetterCount();
+}
+
+function showCountdown(){
+    return new Promise(resolve=>{
+        countdownEl.style.opacity='1'; countdownEl.textContent='3'; let count=3;
+        const interval=setInterval(()=>{
+            count--; if(count>0){countdownEl.textContent=count; countdownEl.style.animation='none'; setTimeout(()=>countdownEl.style.animation='countdownPulse 1s ease-in-out',10);}
+            else{clearInterval(interval); countdownEl.textContent='GO!'; countdownEl.style.animation='countdownPulse 1s ease-in-out'; setTimeout(()=>{countdownEl.style.opacity='0'; resolve();},1000);}
+        },1000);
+    });
+}
+
+function init(){
+    initLetters();
+    startBtn.addEventListener('click',startFireworks);
+    debugBtn.addEventListener('click',showAllLetters);
+    resetBtn.addEventListener('click',resetAnimation);
+}
+
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
